@@ -77,7 +77,9 @@ class ChatServer:
             )
 
             self.logger.info("Server started.")
-            await asyncio.sleep(120)  # Server runs for 2 minutes (120 seconds)
+            # await asyncio.sleep(120)  # Server runs for 2 minutes (120 seconds)
+            while True:  # Run indefinitely
+                await asyncio.sleep(1)  # Sleep to prevent blocking 
 
         except KeyboardInterrupt:
             pass
