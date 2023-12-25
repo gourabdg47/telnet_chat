@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server Dashboard</title>
+</head>
+<body>
+    <h1>Server Dashboard</h1>
+    
+    <div>
+        <h2>Server Control</h2>
+        <form method="POST" action="/start_server">
+            <button type="submit">Start Server</button>
+        </form>
+        <form method="POST" action="/stop_server">
+            <button type="submit">Stop Server</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>System Monitoring</h2>
+        <a href="/monitor">View System Resources</a>
+    </div>
+</body>
+</html>
