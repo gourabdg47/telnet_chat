@@ -17,6 +17,12 @@ class ChatServer:
             ch.setLevel(logging.DEBUG)
             ch.setFormatter(formatter)
             self.logger.addHandler(ch)
+            
+         # Create file handler and set level to debug
+        file_handler = logging.FileHandler('chat_server.log')
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        self.logger.addHandler(file_handler)  # Add file handler to the logger
 
     async def handle_client(self, reader, writer):
         try:
@@ -104,3 +110,7 @@ if __name__ == "__main__":
         loop = asyncio.get_event_loop()
         loop.run_until_complete(chat_server.run_server())
         loop.close()
+        
+        # loop = asyncio.get_event_loop()
+        # asyncio.ensure_future(chat_server.run_server())
+        # loop.run_forever()
