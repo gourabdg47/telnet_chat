@@ -4,6 +4,10 @@ import logging
 
 class ChatServer:
     def __init__(self):
+        
+        # Initialize running_tasks as an empty list
+        self.running_tasks = []
+
         self.clients = {}
         self.topic = "GroupChat"
         self.server = None
@@ -46,6 +50,10 @@ class ChatServer:
                     break
 
                 await self.broadcast_message(username, message)
+            
+            # Append the current task to running_tasks
+            task = asyncio.current_task()
+            self.running_tasks.append(task)
 
         except asyncio.CancelledError:
             self.logger.debug("Client connection cancelled.")
@@ -54,7 +62,7 @@ class ChatServer:
             self.logger.error(f"Exception occurred in handle_client: {e}")
             del self.clients[username]
             writer.close()
-            await writer.wait_closed()
+
 
     async def broadcast_message(self, sender_username, message):
         formatted_message = f"{sender_username}: {message}\n"
@@ -68,7 +76,7 @@ class ChatServer:
                 self.logger.error(f"Exception occurred while broadcasting message to {client_username}: {e}")
                 del self.clients[client_username]
                 client_writer.close()
-                await client_writer.wait_closed()
+
 
     async def run_server(self):
         try:
@@ -95,12 +103,29 @@ class ChatServer:
             self.server.close()
             await self.server.wait_closed()
 
-        for client_username, client_writer in list(self.clients.items()):
-            client_writer.close()
-            await client_writer.wait_closed()
-            del self.clients[client_username]
+            # Cancel all client tasks
+            for client_writer in self.clients.values():
+                client_writer.close()
 
-        asyncio.get_event_loop().stop()
+            await asyncio.gather(*[client_writer.drain() for client_writer in self.clients.values()])
+
+            # Clear the clients dictionary
+            self.clients = {}
+
+            print("self.running_tasks: ----> ", self.running_tasks)
+            # Cancel all running tasks
+            for task in self.running_tasks:
+                task.cancel()
+
+            await asyncio.gather(*self.running_tasks, return_exceptions=True)
+
+            # Clear the running_tasks list
+            self.running_tasks = []
+
+            # Stop the event loop (if desired)
+            asyncio.get_event_loop().stop()
+
+
 
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
