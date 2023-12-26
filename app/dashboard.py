@@ -50,4 +50,4 @@ def stop_server():
         server_thread = threading.Thread(target=run_event_loop_stop)
         server_thread.start()
         return "Server stopping."
-    return "Server is not running."
+    return "Server is not running. "
