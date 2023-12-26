@@ -135,39 +135,47 @@ class ChatServer:
     
     
     async def handle_client(self, reader, writer):
-        
-        writer.write(b"Enter your username: ")
-        await writer.drain()
 
-        username = (await reader.read(100)).decode().strip()
+        writer.write("Enter username: ".encode())
+        await writer.drain()
+        
+        username = await reader.readline()
+        username = username.decode().strip()
+
+        if not username:
+            writer.write("Invalid username".encode())
+            writer.close()
+            return
+
         self.clients[username] = (reader, writer, username)
 
-        writer.write("Welcome !".encode())
+        writer.write(f"Welcome {username}! \n".encode())
         await writer.drain()
 
         while True:
             try:
-                msg = await asyncio.wait_for(reader.readline(), timeout=60)
-            
+                msg = await asyncio.wait_for(reader.readline(), timeout=120)
+
             except asyncio.TimeoutError:
                 self.logger.warning(f"{username} timed out")
                 break
-
+            
             if msg.strip().decode() == "/exit":
                 self.logger.info(f"{username} disconnected")
                 break
 
-            message = f"{username}: {msg.decode()}"
+            message = f"{username}: {msg.decode()}"  
             await self.broadcast(message, username)
 
         del self.clients[username]
         writer.close()
 
     async def broadcast(self, message, sender):
-        for username, (reader, writer, name) in self.clients.items():
-            if name != sender:
-                writer.write(message.encode())
-                await writer.drain()
+        for u, (r, w, n) in self.clients.items():
+            # if n != sender:
+            w.write(message.encode())
+            await w.drain()
+
 
 
 

@@ -57,3 +57,13 @@
 2023-12-26 14:47:39,345 - ChatServer - WARNING - b'H' timed out
 2023-12-26 14:47:47,773 - ChatServer - WARNING - b'z' timed out
 2023-12-26 14:49:22,957 - ChatServer - INFO - Server started.
+2023-12-26 14:52:25,163 - ChatServer - INFO - Server started.
+2023-12-26 14:54:22,215 - ChatServer - WARNING - T timed out
+2023-12-26 14:54:36,961 - ChatServer - WARNING - H timed out
+2023-12-26 15:00:46,617 - ChatServer - INFO - Server started.
+2023-12-26 15:02:27,469 - ChatServer - WARNING - H timed out
+2023-12-26 15:02:31,182 - ChatServer - WARNING - T timed out
+2023-12-26 15:03:30,116 - ChatServer - INFO - Server started.
+2023-12-26 15:05:09,160 - ChatServer - WARNING - H2 timed out
+2023-12-26 15:05:17,593 - ChatServer - WARNING - H1 timed out
+2023-12-26 15:09:59,184 - ChatServer - INFO - Server started.
